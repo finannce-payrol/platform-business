@@ -1,25 +1,22 @@
 package com.maldeniya.hodings.platformsystem.personal_sales.services;
 
 import com.maldeniya.hodings.platformsystem.personal_sales.entity.PersonalSales;
-import com.maldeniya.hodings.platformsystem.personal_sales.repositories.PersonalScalesRepository;
+import com.maldeniya.hodings.platformsystem.personal_sales.repositories.PersonalSalesRepository;
 import com.maldeniya.hodings.platformsystem.users.entity.User;
 import com.maldeniya.hodings.platformsystem.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.*;
 
 @Service
 @AllArgsConstructor
-public class PersonalScaleService {
+public class PersonalSaleService {
 
-    private final PersonalScalesRepository personalScalesRepository;
+    private final PersonalSalesRepository personalSalesRepository;
     private final UserRepository userRepository;
-    public Double getPersonalScaleQuota(String userId){
-        return personalScalesRepository.getPersonalSalesByQuery(
+    public Double getPersonalSaleQuota(String userId){
+        return personalSalesRepository.getPersonalSalesByQuery(
                         userId,
                         getEpochValue(DayType.START),
                         getEpochValue(DayType.END)).stream()
@@ -43,12 +40,12 @@ public class PersonalScaleService {
         return instant.toEpochMilli();
     }
 
-    public PersonalSales getPersonalScales(String userId, String scaleId){
-        return personalScalesRepository.findByIdAndUserId(scaleId, userId).orElseThrow(()-> new RuntimeException("Scale not found"));
+    public PersonalSales getPersonalSales(String userId, String scaleId){
+        return personalSalesRepository.findByIdAndUserId(scaleId, userId).orElseThrow(()-> new RuntimeException("Scale not found"));
     }
 
-    public PersonalSales addPersonalScale(String userId, PersonalSales personalSales){
+    public PersonalSales addPersonalSale(String userId, PersonalSales personalSales){
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
-        return personalScalesRepository.save(personalSales);
+        return personalSalesRepository.save(personalSales);
     }
 }
