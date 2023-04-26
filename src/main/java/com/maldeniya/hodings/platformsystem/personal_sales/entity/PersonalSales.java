@@ -13,7 +13,14 @@ public class PersonalSales {
     @Id
     private String id;
     private String userId;
-    private Instant date;
+    private long date;
     private Double scale;
     private Double percentage;
+
+    public PersonalSales(String userId, long date, Double scale, Double percentage) {
+        this.userId = userId;
+        this.date = date;
+        this.scale = scale;
+        this.percentage = percentage;
+    }
 }

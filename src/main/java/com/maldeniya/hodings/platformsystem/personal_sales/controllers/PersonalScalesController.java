@@ -14,11 +14,11 @@ public class PersonalScalesController {
 
     @PostMapping
     public ResponseEntity addPersonalScale(@PathVariable String userId, @RequestBody PersonalSales personalSales){
-        return null;
+        return ResponseEntity.ok(personalScaleService.addPersonalScale(userId, personalSales));
     }
     @GetMapping(value = "/{scaleId}")
     public ResponseEntity getPersonalScales(@PathVariable String userId, @PathVariable String scaleId){
-        return null;
+        return ResponseEntity.ok(personalScaleService.getPersonalScales(userId, scaleId));
     }
 
     @GetMapping
