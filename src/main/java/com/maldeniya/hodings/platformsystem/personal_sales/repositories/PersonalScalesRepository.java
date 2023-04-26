@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public interface PersonalScalesRepository extends MongoRepository<PersonalSales, String> {
     @Query("{$and: [{'userId': ?0}, " +
-            "{'date': {$lte: ?1}}, " +
-            "{'date': {$gte: ?2}}]}")
+            "{'date': {$gte: ?1}}, " +
+            "{'date': {$lte: ?2}}]}")
     List<PersonalSales> getPersonalSalesByQuery(String userId, long lowerBound, long upperBound);
 
     Optional<PersonalSales> findByIdAndUserId(String id, String userId);

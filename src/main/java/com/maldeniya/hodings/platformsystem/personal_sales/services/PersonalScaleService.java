@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.ZoneId;
+import java.time.*;
 
 @Service
 @AllArgsConstructor
@@ -22,16 +19,28 @@ public class PersonalScaleService {
     private final PersonalScalesRepository personalScalesRepository;
     private final UserRepository userRepository;
     public Double getPersonalScaleQuota(String userId){
+        return personalScalesRepository.getPersonalSalesByQuery(
+                        userId,
+                        getEpochValue(DayType.START),
+                        getEpochValue(DayType.END)).stream()
+                .map(personalSales ->
+                        personalSales.getScale() * personalSales.getPercentage() /100)
+                .reduce((val1, val2)->
+                        val1+val2)
+                .orElseGet(()-> (double) 0L);
 
-        LocalDate todayDate = LocalDate.now();
-        long start = todayDate.withDayOfMonth(1).toEpochDay();
-        long end = todayDate.withDayOfMonth(30).toEpochDay();
-        return personalScalesRepository.getPersonalSalesByQuery(userId,
-                start,
-                end).stream().map(personalSales ->
-                personalSales.getScale() * personalSales.getPercentage() /100).reduce((val1, val2)->
-                val1+val2).orElseGet(()-> (double) 0L);
+    }
 
+    private long getEpochValue(DayType dayType){
+        LocalDate day = LocalDate.of(ZonedDateTime.now().getYear(), ZonedDateTime.now().getMonthValue(), 1);
+        Instant instant;
+        if(dayType.equals(DayType.END)){
+            day = day.plusMonths(1).minusDays(1);
+            instant = day.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC);
+        }else {
+            instant = day.atTime(LocalTime.MIN).toInstant(ZoneOffset.UTC);
+        }
+        return instant.toEpochMilli();
     }
 
     public PersonalSales getPersonalScales(String userId, String scaleId){
